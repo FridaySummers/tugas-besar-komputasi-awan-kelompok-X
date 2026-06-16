@@ -68,8 +68,8 @@ Kedua EC2 terhubung ke **satu database yang sama** (RDS) sehingga data konsisten
 | 1 | Akun AWS | Aktif dan bisa membuat resources |
 | 2 | AWS CLI | Terinstall di lokal (opsional) |
 | 3 | Key Pair (.pem) | Untuk SSH ke EC2 |
-| 4 | Terminal / Git Bash | Untuk menjalankan perintah SCP dan SSH |
-| 5 | File proyek | Folder `Server_1/` dan `Server_2/` |
+| 4 | Remote Git repository | GitHub / GitLab / CodeCommit untuk push dan pull kode |
+| 5 | Terminal | Untuk SSH dan perintah Git |
 
 ---
 
@@ -177,38 +177,75 @@ Atau dari lokal pakai MySQL Workbench / Cloud Shell.
 
 ---
 
-## 📦 Langkah 4 — Deploy Kode ke EC2
+## 📦 Langkah 4 — Push ke Remote Repository
 
-### 4.1 Upload Server_1 ke EC2-1
-
-Buka terminal di lokal (cmd, PowerShell, atau Git Bash):
+Sebelum deploy ke EC2, push proyek ke remote repository (GitHub/GitLab):
 
 ```bash
-scp -i /path/ke/key.pem -r \
-  "C:\laragon\www\Repo\Tugas Besar Cloud Computing\Server_1\*" \
-  ubuntu@<IP-PUBLIK-EC2-1>:/var/www/html/
-```
-
-### 4.2 Upload Server_2 ke EC2-2
-
-```bash
-scp -i /path/ke/key.pem -r \
-  "C:\laragon\www\Repo\Tugas Besar Cloud Computing\Server_2\*" \
-  ubuntu@<IP-PUBLIK-EC2-2>:/var/www/html/
-```
-
-### 4.3 Set Permission
-
-SSH ke masing-masing instance lalu:
-
-```bash
-sudo chown -R www-data:www-data /var/www/html/
-sudo chmod -R 755 /var/www/html/
+git remote add origin <URL-REPO-ANDA>
+git push -u origin main
 ```
 
 ---
 
-## 📦 Langkah 5 — Konfigurasi `db_connect.php`
+## 📦 Langkah 5 — Clone & Deploy di Masing-masing EC2
+
+### 5.1 Clone Repository
+
+SSH ke **EC2-1**:
+
+```bash
+ssh -i /path/ke/key.pem ubuntu@<IP-PUBLIK-EC2-1>
+```
+
+Clone repo dan deploy Server_1:
+
+```bash
+cd /home/ubuntu
+git clone <URL-REPO-ANDA> tugas-cloud
+
+# Copy isi Server_1 ke document root Apache
+sudo cp -r tugas-cloud/Server_1/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
+```
+
+### 5.2 Ulangi untuk EC2-2 (dengan Server_2)
+
+SSH ke **EC2-2**:
+
+```bash
+ssh -i /path/ke/key.pem ubuntu@<IP-PUBLIK-EC2-2>
+
+cd /home/ubuntu
+git clone <URL-REPO-ANDA> tugas-cloud
+
+# Copy isi Server_2 ke document root Apache
+sudo cp -r tugas-cloud/Server_2/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
+```
+
+> 💡 **Alternatif symlink:** kalau ingin perubahan langsung ter-reflect tanpa copy ulang:
+> ```bash
+> sudo rm -rf /var/www/html
+> sudo ln -s /home/ubuntu/tugas-cloud/Server_1 /var/www/html
+> sudo chown -R www-data:www-data /home/ubuntu/tugas-cloud
+> ```
+> Tapi pastikan `<Directory>` di konfigurasi Apache mengizinkan `FollowSymlinks`.
+
+### 5.3 Import Skema Database
+
+Dari **salah satu EC2** (cukup sekali):
+
+```bash
+mysql -h <ENDPOINT-RDS> -u admin -p < /home/ubuntu/tugas-cloud/database.sql
+# Password: TugasCloud123
+```
+
+---
+
+## 📦 Langkah 6 — Konfigurasi `db_connect.php`
 
 Edit di **kedua server**:
 
@@ -229,7 +266,7 @@ Kedua file boleh **identik** karena keduanya mengakses database yang sama.
 
 ---
 
-## 📦 Langkah 6 — Verifikasi Manual
+## 📦 Langkah 7 — Verifikasi Manual
 
 Coba akses langsung tiap instance via IP publik:
 
@@ -251,7 +288,7 @@ Setelah login, badge di halaman utama:
 
 ---
 
-## ⚖️ Langkah 7 — Setup Load Balancer (ALB)
+## ⚖️ Langkah 8 — Setup Load Balancer (ALB)
 
 ### 7.1 Buat Target Group
 
@@ -310,23 +347,46 @@ Login lalu **refresh halaman berkali-kali**. Badge akan bergantian:
 
 ## 🔄 Sinkronisasi Kode (Saat Update)
 
+Karena pakai Git, update kode cukup dua langkah:
+
+**Lokal —** commit dan push perubahan:
+
 ```bash
-# Upload ulang ke kedua server
-scp -i key.pem -r Server_1/* ubuntu@<EC2-1>:/var/www/html/
-scp -i key.pem -r Server_2/* ubuntu@<EC2-2>:/var/www/html/
+git add .
+git commit -m "Deskripsi perubahan"
+git push
 ```
 
-Atau buat file `deploy.sh` untuk sekali jalan:
+**EC2-1 dan EC2-2 —** pull dan deploy ulang:
+
+```bash
+cd /home/ubuntu/tugas-cloud
+git pull origin main
+
+# Jika pakai symlink: cukup git pull, perubahan otomatis ter-reflect
+# Jika pakai copy: jalankan ulang perintah copy
+sudo cp -r Server_1/* /var/www/html/   # di EC2-1
+sudo cp -r Server_2/* /var/www/html/   # di EC2-2
+sudo chown -R www-data:www-data /var/www/html/
+```
+
+Atau buat script deploy di masing-masing EC2 (`/home/ubuntu/deploy.sh`):
 
 ```bash
 #!/bin/bash
-KEY=~/key.pem
-EC2_1=<IP-1>
-EC2_2=<IP-2>
+cd /home/ubuntu/tugas-cloud
+git pull origin main
 
-scp -i $KEY -r Server_1/* ubuntu@$EC2_1:/var/www/html/
-scp -i $KEY -r Server_2/* ubuntu@$EC2_2:/var/www/html/
+HOSTNAME=$(hostname)
+if [[ "$HOSTNAME" == *"server-1"* || "$HOSTNAME" == *"ec2-1"* ]]; then
+  sudo cp -r Server_1/* /var/www/html/
+elif [[ "$HOSTNAME" == *"server-2"* || "$HOSTNAME" == *"ec2-2"* ]]; then
+  sudo cp -r Server_2/* /var/www/html/
+fi
+sudo chown -R www-data:www-data /var/www/html/
 ```
+
+Jalankan: `bash /home/ubuntu/deploy.sh`
 
 ---
 
