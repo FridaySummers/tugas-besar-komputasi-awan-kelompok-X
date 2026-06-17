@@ -17,33 +17,40 @@ while ($row = $result->fetch_assoc()) {
 
 // Indikator server untuk pengujian Load Balancer.
 // Ganti [Nama Instance/AZ] dengan Availability Zone atau nama instance EC2.
-define("SERVER_LABEL", "SERVER 1 - [Nama Instance/AZ]");
+define("SERVER_LABEL", "SERVER 1 - [MyDBServer/us-east-1a]");
+
+// Tema CSS untuk membedakan visual tiap server
+$server_theme = "theme-server-1";
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Tugas Cloud</title>
+    <title>Dashboard — Tugas Besar Komputasi Awan</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="<?= $server_theme ?>">
     <nav class="navbar">
-        <span class="brand">Tugas Cloud</span>
-        <span class="user-info">Halo, <?= htmlspecialchars(
-            $_SESSION["username"],
-        ) ?> |
-            <a href="logout.php" class="logout-link">Logout</a>
-        </span>
+        <div class="nav-inner">
+            <span class="brand">Tugas Besar Komputasi Awan </span>
+            <span class="user-info">
+                <span class="welcome">Halo, <?= htmlspecialchars(
+                    $_SESSION["username"],
+                ) ?></span>
+                <a href="logout.php" class="logout-link">Logout</a>
+            </span>
+        </div>
     </nav>
 
     <main class="container">
         <!-- Indikator Load Balancer -->
         <div class="server-badge"><?= SERVER_LABEL ?></div>
+        <p class="server-subtitle">Load Balancer Testing</p>
 
         <!-- Tabel Anggota Kelompok -->
         <section class="card">
-            <h2>Data Anggota Kelompok</h2>
+            <h2>Data Anggota Kelompok X</h2>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -59,8 +66,8 @@ define("SERVER_LABEL", "SERVER 1 - [Nama Instance/AZ]");
                             <?php foreach ($anggota as $a): ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
-                                    <td><?= htmlspecialchars($a["nama"]) ?></td>
                                     <td><?= htmlspecialchars($a["nim"]) ?></td>
+                                    <td><?= htmlspecialchars($a["nama"]) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

@@ -1,173 +1,165 @@
 /* ============================================================
    Style — Tugas Besar Komputasi Awan (LAMP Stack)
+   Dual Theme: Server 1 (Ocean Blue) / Server 2 (Emerald Green)
    ============================================================ */
 
-/* Reset dasar */
-*, *::before, *::after {
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #1c1e21;
     min-height: 100vh;
+    transition: background 0.4s ease;
 }
 
-/* ----- Halaman Login ----- */
-.login-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login-card {
-    background: #fff;
-    padding: 2.5rem 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.08);
-    width: 100%;
-    max-width: 380px;
-    text-align: center;
-}
-
-.login-card h1 {
-    font-size: 1.75rem;
-    margin-bottom: .25rem;
-}
-
-.login-card .subtitle {
-    color: #65676b;
-    font-size: .875rem;
-    margin-bottom: 1.5rem;
-}
-
-.login-card label {
-    display: block;
-    text-align: left;
-    font-weight: 600;
-    font-size: .875rem;
-    margin-bottom: .35rem;
-    color: #444;
-}
-
-.login-card input[type="text"],
-.login-card input[type="password"] {
-    width: 100%;
-    padding: .65rem .75rem;
-    border: 1px solid #ccd0d5;
-    border-radius: 6px;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    transition: border .2s;
-}
-
-.login-card input:focus {
-    outline: none;
-    border-color: #1877f2;
-    box-shadow: 0 0 0 2px rgba(24,119,242,.2);
-}
-
-.login-card button {
-    width: 100%;
-    padding: .7rem;
-    background: #1877f2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background .2s;
-}
-
-.login-card button:hover {
-    background: #166fe5;
-}
-
-/* ----- Alert ----- */
-.alert {
-    padding: .65rem .85rem;
-    border-radius: 6px;
-    font-size: .875rem;
-    margin-bottom: 1rem;
-    text-align: left;
-}
-
-.alert.error {
-    background: #ffe9e9;
-    color: #b33;
-    border: 1px solid #f5c6cb;
-}
+/* ===================================================================
+   THEME SHARED — komponen yang strukturnya sama, warna menyesuaikan
+   =================================================================== */
 
 /* ----- Navbar ----- */
 .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0 1.5rem;
+    transition:
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
-    padding: .85rem 2rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 0.85rem 0;
 }
 
 .navbar .brand {
     font-weight: 700;
-    font-size: 1.1rem;
-    color: #1877f2;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar .brand::before {
+    content: "\2601";
+    font-size: 1.3rem;
 }
 
 .navbar .user-info {
-    font-size: .9rem;
-    color: #444;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.welcome {
+    opacity: 0.85;
 }
 
 .logout-link {
-    color: #e44;
     text-decoration: none;
     font-weight: 600;
-}
-
-.logout-link:hover {
-    text-decoration: underline;
+    padding: 0.35rem 0.9rem;
+    border-radius: 6px;
+    transition:
+        background 0.2s,
+        color 0.2s;
 }
 
 /* ----- Container ----- */
 .container {
     max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 3rem;
 }
 
-/* ----- Server Badge (Load Balancer Indicator) ----- */
+/* ----- Server Badge ----- */
 .server-badge {
-    display: inline-block;
-    background: #1877f2;
-    color: #fff;
+    display: table;
+    margin: 0 auto 0.5rem;
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: 2px;
-    padding: .6rem 2rem;
-    border-radius: 10px;
+    padding: 0.7rem 2.2rem;
+    border-radius: 14px;
     text-align: center;
-    margin: 0 auto 2rem;
-    display: table;
-    box-shadow: 0 3px 10px rgba(24,119,242,.3);
+    position: relative;
+    animation: fadeDrop 0.6s ease-out;
+}
+
+@keyframes fadeDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.server-badge::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 17px;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+.server-subtitle {
+    text-align: center;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+    opacity: 0.5;
 }
 
 /* ----- Card ----- */
 .card {
     background: #fff;
-    border-radius: 10px;
-    padding: 1.5rem 1.75rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    border-radius: 16px;
+    padding: 1.75rem 2rem;
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 12px 40px rgba(0, 0, 0, 0.08);
 }
 
 .card h2 {
+    font-size: 1.15rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card h2::before {
+    content: "\1F465";
     font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #333;
 }
 
 /* ----- Table ----- */
@@ -181,50 +173,390 @@ table {
 }
 
 thead th {
-    background: #f7f8fa;
     text-align: left;
-    padding: .65rem .75rem;
-    font-size: .875rem;
-    font-weight: 600;
-    color: #555;
-    border-bottom: 2px solid #e4e6eb;
+    padding: 0.75rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid;
+}
+
+thead th:first-child {
+    width: 52px;
+    text-align: center;
 }
 
 tbody td {
-    padding: .6rem .75rem;
-    border-bottom: 1px solid #eef0f4;
-    font-size: .9rem;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid;
+    font-size: 0.92rem;
+    transition: background 0.2s ease;
 }
 
-tbody tr:hover {
-    background: #f8f9fb;
+tbody td:first-child {
+    text-align: center;
+    color: #999;
+    font-weight: 600;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
 }
 
 td.empty {
     text-align: center;
-    color: #999;
     font-style: italic;
-    padding: 2rem;
+    padding: 2.5rem;
+    opacity: 0.5;
 }
 
-/* ----- Responsive ----- */
-@media (max-width: 540px) {
-    .login-card {
-        padding: 2rem 1.25rem;
+/* ----- Alert ----- */
+.alert {
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.alert.error {
+    background: #fff0f0;
+    color: #b33;
+    border: 1px solid #ffd4d4;
+}
+
+/* ===================================================================
+   THEME SERVER 1 — Ocean Blue  (via body.theme-server-1)
+   =================================================================== */
+
+.theme-server-1 {
+    background: linear-gradient(135deg, #e8f0fe 0%, #f4f7fb 50%, #ffffff 100%);
+}
+
+.theme-server-1 .navbar {
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 1px 8px rgba(10, 102, 194, 0.1);
+}
+
+.theme-server-1 .navbar .brand {
+    color: #0a66c2;
+}
+
+.theme-server-1 .navbar .user-info {
+    color: #444;
+}
+
+.theme-server-1 .logout-link {
+    color: #0a66c2;
+    border: 1px solid transparent;
+}
+
+.theme-server-1 .logout-link:hover {
+    background: #e8f0fe;
+    border-color: #0a66c2;
+}
+
+.theme-server-1 .server-badge {
+    background: linear-gradient(135deg, #0a66c2, #1e88e5);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(10, 102, 194, 0.35);
+}
+
+.theme-server-1 .server-badge::after {
+    background: linear-gradient(135deg, #0a66c2, #1e88e5);
+}
+
+.theme-server-1 .server-subtitle {
+    color: #0a66c2;
+}
+
+.theme-server-1 .card h2 {
+    color: #0a66c2;
+    border-bottom-color: #e0eaff;
+}
+
+.theme-server-1 thead th {
+    color: #0a66c2;
+    border-bottom-color: #d0e0ff;
+}
+
+.theme-server-1 tbody td {
+    border-bottom-color: #eef2f7;
+}
+
+.theme-server-1 tbody tr:hover td {
+    background: #f0f6ff;
+}
+
+/* Login — Server 1 accent */
+.theme-server-1 .login-card input:focus {
+    border-color: #0a66c2;
+    box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.15);
+}
+
+.theme-server-1 .login-card button {
+    background: linear-gradient(135deg, #0a66c2, #1565c0);
+}
+
+.theme-server-1 .login-card button:hover {
+    background: linear-gradient(135deg, #0856a5, #0d47a1);
+}
+
+/* ===================================================================
+   THEME SERVER 2 — Emerald Green  (via body.theme-server-2)
+   =================================================================== */
+
+.theme-server-2 {
+    background: linear-gradient(135deg, #e6f7f0 0%, #f0faf5 50%, #ffffff 100%);
+}
+
+.theme-server-2 .navbar {
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 1px 8px rgba(13, 148, 136, 0.12);
+}
+
+.theme-server-2 .navbar .brand {
+    color: #0d9488;
+}
+
+.theme-server-2 .navbar .user-info {
+    color: #444;
+}
+
+.theme-server-2 .logout-link {
+    color: #0d9488;
+    border: 1px solid transparent;
+}
+
+.theme-server-2 .logout-link:hover {
+    background: #e0f5f2;
+    border-color: #0d9488;
+}
+
+.theme-server-2 .server-badge {
+    background: linear-gradient(135deg, #0d9488, #14b8a6);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+}
+
+.theme-server-2 .server-badge::after {
+    background: linear-gradient(135deg, #0d9488, #14b8a6);
+}
+
+.theme-server-2 .server-subtitle {
+    color: #0d9488;
+}
+
+.theme-server-2 .card h2 {
+    color: #0d9488;
+    border-bottom-color: #d0f0ea;
+}
+
+.theme-server-2 thead th {
+    color: #0d9488;
+    border-bottom-color: #c8eae4;
+}
+
+.theme-server-2 tbody td {
+    border-bottom-color: #eef7f5;
+}
+
+.theme-server-2 tbody tr:hover td {
+    background: #edfaf7;
+}
+
+/* Login — Server 2 accent */
+.theme-server-2 .login-card input:focus {
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.theme-server-2 .login-card button {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+}
+
+.theme-server-2 .login-card button:hover {
+    background: linear-gradient(135deg, #0b7a70, #0d5f58);
+}
+
+/* ===================================================================
+   LOGIN PAGE — standalone, no theme class needed
+   =================================================================== */
+
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8f0fe 0%, #dce6f5 50%, #ffffff 100%);
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 2.75rem 2.25rem 2rem;
+    border-radius: 24px;
+    box-shadow:
+        0 4px 32px rgba(0, 0, 0, 0.06),
+        0 1px 4px rgba(0, 0, 0, 0.03);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    animation: fadeDrop 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0a66c2, #1e88e5, #64b5f6);
+}
+
+.login-icon {
+    font-size: 3.2rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.login-card h1 {
+    font-size: 1.65rem;
+    margin-bottom: 0.25rem;
+    color: #1c1e21;
+    font-weight: 700;
+}
+
+.login-card .subtitle {
+    color: #65676b;
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+    letter-spacing: 0.3px;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.82rem;
+    margin-bottom: 0.4rem;
+    color: #444;
+    letter-spacing: 0.3px;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid #e4e8ed;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition:
+        border 0.25s,
+        box-shadow 0.25s;
+    background: #fafbfc;
+    color: #1c1e21;
+}
+
+.input-group input::placeholder {
+    color: #b0b8c4;
+    font-size: 0.9rem;
+}
+
+.input-group input:focus {
+    outline: none;
+    background: #fff;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 0.8rem;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition:
+        transform 0.2s,
+        box-shadow 0.25s,
+        background 0.25s;
+    margin-top: 0.5rem;
+}
+
+.login-card button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.login-card button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.login-footer {
+    margin-top: 1.75rem;
+    font-size: 0.75rem;
+    color: #b0b8c4;
+    letter-spacing: 0.3px;
+}
+
+/* ===================================================================
+   RESPONSIVE
+   =================================================================== */
+
+@media (max-width: 600px) {
+    .server-badge {
+        font-size: 1.35rem;
+        padding: 0.55rem 1.4rem;
     }
 
-    .navbar {
-        padding: .75rem 1rem;
-        flex-wrap: wrap;
-        gap: .5rem;
+    .server-subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
     }
 
     .card {
-        padding: 1rem;
+        padding: 1.25rem 1rem;
     }
 
-    .server-badge {
-        font-size: 1.5rem;
-        padding: .5rem 1.5rem;
+    .card h2 {
+        font-size: 1rem;
+    }
+
+    .navbar {
+        padding: 0 1rem;
+    }
+
+    .nav-inner {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        padding: 0.65rem 0;
+    }
+
+    .welcome {
+        display: none;
+    }
+
+    .login-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
     }
 }

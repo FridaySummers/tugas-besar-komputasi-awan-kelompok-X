@@ -1,39 +1,41 @@
 <?php
 session_start();
-require_once 'db_connect.php';
+require_once "db_connect.php";
 
 // Redirect ke index jika sudah login
-if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit;
+if (isset($_SESSION["user_id"])) {
+    header("Location: index.php");
+    exit();
 }
 
-$error = '';
+$error = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = trim($_POST["username"] ?? "");
+    $password = $_POST["password"] ?? "";
 
-    if ($username !== '' && $password !== '') {
+    if ($username !== "" && $password !== "") {
         // Prepared statement untuk mencegah SQL Injection
-        $stmt = $conn->prepare("SELECT id, username, password FROM users WHERE username = ?");
+        $stmt = $conn->prepare(
+            "SELECT id, username, password FROM users WHERE username = ?",
+        );
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            if (password_verify($password, $row['password'])) {
+            if (password_verify($password, $row["password"])) {
                 // Login berhasil — buat session
-                $_SESSION['user_id']  = $row['id'];
-                $_SESSION['username'] = $row['username'];
-                header('Location: index.php');
-                exit;
+                $_SESSION["user_id"] = $row["id"];
+                $_SESSION["username"] = $row["username"];
+                header("Location: index.php");
+                exit();
             }
         }
-        $error = 'Username atau password salah.';
+        $error = "Username atau password salah.";
         $stmt->close();
     } else {
-        $error = 'Silakan isi username dan password.';
+        $error = "Silakan isi username dan password.";
     }
 }
 ?>
@@ -42,12 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Tugas Cloud</title>
+    <title>Login — Tugas Besar Komputasi Awan</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="login-body">
     <div class="login-card">
-        <h1>Login</h1>
+        <div class="login-icon">☁️</div>
+        <h1>Selamat Datang</h1>
         <p class="subtitle">Tugas Besar Komputasi Awan</p>
 
         <?php if ($error): ?>
@@ -55,14 +58,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="post" autocomplete="off">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Masukkan username" required>
+            </div>
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Masukkan password" required>
+            </div>
 
             <button type="submit">Masuk</button>
         </form>
+
+        <p class="login-footer">&copy; 2026 — Tugas Besar Komputasi Awan</p>
     </div>
 </body>
 </html>
