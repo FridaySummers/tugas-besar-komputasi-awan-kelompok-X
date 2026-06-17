@@ -17,7 +17,7 @@ while ($row = $result->fetch_assoc()) {
 
 // Indikator server untuk pengujian Load Balancer.
 // Ganti [Nama Instance/AZ] dengan Availability Zone atau nama instance EC2.
-define("SERVER_LABEL", "SERVER 2 - [MyDBServer2/us-east-1a]");
+define("SERVER_LABEL", "SERVER 2 - [Webserver-2/ap-southeast-3b]");
 
 // Tema CSS untuk membedakan visual tiap server
 $server_theme = "theme-server-2";
