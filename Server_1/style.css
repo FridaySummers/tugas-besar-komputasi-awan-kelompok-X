@@ -294,6 +294,14 @@ td.empty {
 }
 
 /* Login — Server 1 accent */
+.theme-server-1.login-body {
+    background: linear-gradient(135deg, #e8f0fe 0%, #cfe0fa 50%, #ffffff 100%);
+}
+
+.theme-server-1 .login-card::before {
+    background: linear-gradient(90deg, #0a66c2, #1e88e5, #64b5f6);
+}
+
 .theme-server-1 .login-card input:focus {
     border-color: #0a66c2;
     box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.15);
@@ -371,6 +379,14 @@ td.empty {
 }
 
 /* Login — Server 2 accent */
+.theme-server-2.login-body {
+    background: linear-gradient(135deg, #e6f7f0 0%, #c8f0e8 50%, #ffffff 100%);
+}
+
+.theme-server-2 .login-card::before {
+    background: linear-gradient(90deg, #0d9488, #14b8a6, #5eead4);
+}
+
 .theme-server-2 .login-card input:focus {
     border-color: #0d9488;
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);

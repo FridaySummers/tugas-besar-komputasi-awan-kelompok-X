@@ -9,6 +9,7 @@ if (isset($_SESSION["user_id"])) {
 }
 
 $error = "";
+$server_theme = "theme-server-2";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST["username"] ?? "");
@@ -47,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Login — Tugas Besar Komputasi Awan</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-body">
+<body class="login-body <?= $server_theme ?>">
     <div class="login-card">
         <div class="login-icon">☁️</div>
-        <h1>Selamat Datang</h1>
+        <h1>Server 2 へ ようこそ!!!</h1>
         <p class="subtitle">Tugas Besar Komputasi Awan</p>
 
         <?php if ($error): ?>
@@ -71,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <button type="submit">Masuk</button>
         </form>
 
-        <p class="login-footer">&copy; 2026 — Tugas Besar Komputasi Awan</p>
+        <p class="login-footer">&copy; 2026 — Kelompok X</p>
     </div>
 </body>
 </html>
